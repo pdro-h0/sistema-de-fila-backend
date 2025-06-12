@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id       String @id @default(uuid())
+  name     String
+  category String
+  priority String
+  status   String @default("Waiting")
+  contact  String
+  createdAt DateTime @default(now())
+
+  queue     Queue?     @relation(fields: [queueId], references: [id], onDelete: Cascade)
+  queueId  String?   @map("queue_id")
+  histories   History[]
+
+@@index([category])
+  @@map("clients")
+}
+
+model Queue {
+  id       String @id @default(uuid())
+  category String
+
+  clients   Client[]
+
+  @@map("queues")
+}
+
+model History {
+  id String @id @default(uuid())
+  calledAt DateTime @default(now()) @map("called_at")
+
+  Client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId String @map("client_id")
+  
+
+  @@map("histories")
+}

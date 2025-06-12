@@ -1,0 +1,17 @@
+@baseURL = http://localhost:3333
+POST {{baseURL}}/queue
+Content-Type: application/json
+
+{
+    "name": "João Silva4",
+    "category": "Exames",
+    "priority": "Normal",
+    "contact": "email4@example.com"
+}
+###
+
+
+
+GET {{baseURL}}/queue/aeb99332-532d-4479-943f-774119b4156b/position
+Content-Type: application/json
+###
