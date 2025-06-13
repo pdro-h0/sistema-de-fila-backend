@@ -1,11 +1,11 @@
-import express from "express";
-import { env } from "./env";
-import { router } from "./route";
+import express from "express"
+import { env } from "./env"
+import { router } from "./route"
 
 export const app = express()
 
 app.use(express.json())
 app.use(router)
 app.listen(env.PORT, () => {
-    console.log(`Server running on port ${env.PORT}`)
+  console.log(`Server running on port ${env.PORT}`)
 })
