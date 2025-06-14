@@ -1,6 +1,20 @@
 import { db } from "../lib/prisma"
+import { HistoryModel } from "./HistoryModel"
 
 export class ClientModel {
+  id: string
+  name: string
+  category: string
+  priority: string
+  contact: string
+  queueId: string
+  status: string
+  createdAt: Date
+  histories: HistoryModel[]
+  constructor(data: Partial<ClientModel> = {}) {
+    this.fill(data)
+  }
+
   static async create(data: {
     name: string
     category: string
@@ -63,5 +77,17 @@ export class ClientModel {
         histories: true,
       },
     })
+  }
+
+  fill(data: Partial<ClientModel>): void {
+    if (data.id !== undefined) this.id = data.id
+    if (data.name !== undefined) this.name = data.name
+    if (data.category !== undefined) this.category = data.category
+    if (data.priority !== undefined) this.priority = data.priority
+    if (data.contact !== undefined) this.contact = data.contact
+    if (data.queueId !== undefined) this.queueId = data.queueId
+    if (data.status !== undefined) this.status = data.status
+    if (data.createdAt !== undefined) this.createdAt = data.createdAt
+    if (data.histories !== undefined) this.histories = data.histories
   }
 }
