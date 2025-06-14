@@ -56,28 +56,4 @@ export const clientController = {
       return
     }
   }) as RequestHandler,
-
-  callNextClient: (async (req, res) => {
-    try {
-      const { called, position } = await ClientService.callNextClient()
-      res.status(200).json({ called, position })
-      return
-    } catch (error) {
-      console.error(error)
-      res.status(400).json({ error })
-      return
-    }
-  }) as RequestHandler,
-
-  getMetrics: (async (req, res) => {
-    try {
-      const metrics = await ClientService.getMetrics()
-      res.status(200).json(metrics)
-      return
-    } catch (error) {
-      console.error(error)
-      res.status(400).json({ error })
-      return
-    }
-  }) as RequestHandler,
 }
