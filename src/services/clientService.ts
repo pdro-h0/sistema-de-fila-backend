@@ -2,7 +2,8 @@ import { ClientModel } from "../models/ClientModel"
 import { QueueModel } from "../models/QueueModel"
 import type { RegisterClientInput } from "../schemas/clientSchema"
 import { PriorityStrategy } from "../helpers/PrioriryStrategy"
-import { HistoryModel } from "../models/HistoryModel"
+import nodemailer from "nodemailer"
+import { getMailClient } from "../lib/mailer"
 
 export class ClientService {
   static async register(data: RegisterClientInput) {
@@ -21,6 +22,19 @@ export class ClientService {
       contact: data.contact,
       queueId: queue.id,
     })
+    const mail = await getMailClient()
+    const message = await mail.sendMail({
+      from: "Fila de Espera <no-reply@fila.com>",
+      to: client.contact,
+      subject: "Cliente registrado com sucesso!",
+      html: `
+      <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
+      <p>Olá ${client.name}, você está na fila para <strong>${client.category}</strong>. 
+      Você está na <strong>${countPersonsInQueue + 1}</strong>° posição.
+      </p>
+      </div>`.trim(),
+    })
+    console.log(nodemailer.getTestMessageUrl(message))
     return {
       id: client.id,
       position: countPersonsInQueue + 1,
@@ -55,6 +69,18 @@ export class ClientService {
     if (client.status !== "Waiting")
       throw new Error("Service already performed or canceled")
     await ClientModel.update(id, "Canceled")
+    const mail = await getMailClient()
+    const email = await mail.sendMail({
+      from: "Fila de Espera <no-reply@fila.com>",
+      to: client.contact,
+      subject: "Você saiu da fila!",
+      html: `
+      <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
+      <p>Olá ${client.name}, sua inscrição na fila de <strong>${client.category}</strong> foi <strong>cancelada</strong> com sucesso.</p>
+      </div>
+      `.trim(),
+    })
+    console.log(nodemailer.getTestMessageUrl(email))
   }
 
   static async listAllClientsInQueue() {

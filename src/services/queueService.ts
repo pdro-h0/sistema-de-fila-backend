@@ -1,6 +1,8 @@
 import { PriorityStrategy } from "../helpers/PrioriryStrategy"
 import { ClientModel } from "../models/ClientModel"
 import { HistoryModel } from "../models/HistoryModel"
+import nodemailer from "nodemailer"
+import { getMailClient } from "../lib/mailer"
 
 export class QueueService {
   static async getMetrics() {
@@ -46,6 +48,19 @@ export class QueueService {
     const nextClient = clientsSorted[0]
     await ClientModel.update(nextClient.id, "Called")
     await HistoryModel.create(nextClient.id)
+    const mail = await getMailClient()
+    const email = await mail.sendMail({
+      from: "Fila de Espera <no-reply@fila.com>",
+      to: nextClient.contact,
+      subject: "Você foi chamado para atendimento!",
+      html: `
+      <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
+      <p>Olá ${nextClient.name}, chegou a sua vez de ser atendido na fila de <strong>${nextClient.category}</strong>.
+         Por favor, <strong>dirija-se até o balcão</strong></p>
+      </div>
+      `.trim(),
+    })
+    console.log(nodemailer.getTestMessageUrl(email))
     return {
       called: {
         id: nextClient.id,
