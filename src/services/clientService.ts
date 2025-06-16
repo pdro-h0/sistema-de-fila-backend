@@ -8,6 +8,11 @@ import { AppError } from "../middlewares/errorHandler"
 
 export class ClientService {
   static async register(data: RegisterClientInput) {
+    const clientArealdyInQueue = await ClientModel.findUniqueInQueue(
+      data.category.toLocaleLowerCase(),
+      data.contact
+    )
+    if (clientArealdyInQueue) throw new AppError(400, "Client already in queue")
     let queue = await QueueModel.findByCategory(
       data.category.toLocaleLowerCase()
     )

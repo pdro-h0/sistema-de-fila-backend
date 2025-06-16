@@ -46,6 +46,16 @@ export class ClientModel {
     return db.client.findUnique({ where: { id } })
   }
 
+  static async findUniqueInQueue(queueCategory: string, contact: string) {
+    return db.client.findFirst({
+      where: {
+        category: queueCategory,
+        status: "Waiting",
+        contact,
+      },
+    })
+  }
+
   static async findClientsInQueue(status: string, queueId?: string) {
     return db.client.findMany({
       where: {
