@@ -18,6 +18,21 @@ describe("ENDPOINTS", () => {
     })
   })
 
+  it("should not register user if already in queue", async () => {
+    const input = {
+      name: "João Silva",
+      category: "Consulta",
+      priority: "Normal",
+      contact: "email@example.com",
+    }
+    await request(app).post("/queue").send(input)
+    const response = await request(app).post("/queue").send(input)
+    expect(response.status).toBe(400)
+    expect(response.body).toMatchObject({
+      error: "Client already in queue",
+    })
+  })
+
   it("should be able to check position", async () => {
     const clientCreated = await request(app).post("/queue").send({
       name: "João Silva",
