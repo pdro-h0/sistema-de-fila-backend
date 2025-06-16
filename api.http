@@ -3,15 +3,35 @@ POST {{baseURL}}/queue
 Content-Type: application/json
 
 {
-    "name": "João Silva4",
-    "category": "Exames",
+    "name": "João Silva",
+    "category": "Exame",
     "priority": "Normal",
-    "contact": "email4@example.com"
+    "contact": "emai@example.com"
 }
 ###
 
 
 
-GET {{baseURL}}/queue/aeb99332-532d-4479-943f-774119b4156b/position
+GET {{baseURL}}/queue/f3f07cd6-4306-4670-a5c4-75163bb524df/position
 Content-Type: application/json
 ###
+
+
+
+DELETE {{baseURL}}/queue/f9ee0eaa-f797-4818-9bbf-6bc145d3ec03
+###
+
+
+
+GET {{baseURL}}/queue?queueCategory=exame
+###
+
+
+
+
+POST {{baseURL}}/queue/next
+###
+
+
+
+GET {{baseURL}}/admin/metrics

@@ -1,11 +1,8 @@
-import express from "express"
 import { env } from "./env"
-import { router } from "./route"
+import { app } from "./app"
+import { setupSwagger } from "./config/swagger"
 
-export const app = express()
-
-app.use(express.json())
-app.use(router)
+setupSwagger(app)
 app.listen(env.PORT, () => {
   console.log(`Server running on port ${env.PORT}`)
 })

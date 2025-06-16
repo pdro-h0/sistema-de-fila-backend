@@ -3,6 +3,7 @@ import { ClientModel } from "../models/ClientModel"
 import { HistoryModel } from "../models/HistoryModel"
 import nodemailer from "nodemailer"
 import { getMailClient } from "../lib/mailer"
+import { AppError } from "../middlewares/errorHandler"
 
 export class QueueService {
   static async getMetrics() {
@@ -43,7 +44,8 @@ export class QueueService {
 
   static async callNextClient() {
     const waitingClients = await ClientModel.findClientsInQueue("Waiting")
-    if (waitingClients.length === 0) throw new Error("No clients in queue")
+    if (waitingClients.length === 0)
+      throw new AppError(404, "No clients in queue")
     const clientsSorted = PriorityStrategy.sortClients(waitingClients)
     const nextClient = clientsSorted[0]
     await ClientModel.update(nextClient.id, "Called")
@@ -55,7 +57,8 @@ export class QueueService {
       subject: "Você foi chamado para atendimento!",
       html: `
       <div style="font-family: sans-serif; font-size: 16px; line-height: 1.6;">
-      <p>Olá ${nextClient.name}, chegou a sua vez de ser atendido na fila de <strong>${nextClient.category}</strong>.
+      <p>Olá ${nextClient.name}, chegou a sua vez de ser atendido(a) na fila de 
+      <strong style="text-transform:capitalize;">${nextClient.category}</strong>.
          Por favor, <strong>dirija-se até o balcão</strong></p>
       </div>
       `.trim(),
@@ -65,6 +68,7 @@ export class QueueService {
       called: {
         id: nextClient.id,
         name: nextClient.name,
+        queueCategory: nextClient.category,
       },
       position: 1,
     }
