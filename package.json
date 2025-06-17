@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest",
-    "dev": "tsx watch ./src/server.ts"
+    "dev": "tsx watch ./src/server.ts",
+    "build": "tsup src",
+    "start": "node dist/server.js",
+    "prepare": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -34,6 +37,7 @@
     "supertest": "^7.1.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "tsup": "^8.5.0",
     "zod": "^3.25.56"
   }
 }
